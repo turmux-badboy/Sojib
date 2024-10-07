@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #000; /* Black background */
+            color: #fff; /* White text */
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin: 20px 0;
+            font-size: 16px;
+            border: 2px solid rgb(0, 255, 255); /* Initial RGB border */
+            background-color: #222; /* Dark background for input */
+            color: #fff; /* White text inside input */
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: rgb(255, 0, 255); /* Change border color on focus */
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 30px;
+            padding: 15px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            background-color: #1e1e1e;
+            width: 80%;
+            margin: 0 auto;
+            text-align: left;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            color: #fff;
+        }
+        .key {
+            color: #ff4081; /* Pink for keys */
+        }
+        .string {
+            color: #00e676; /* Green for strings */
+        }
+        .number {
+            color: #40c4ff; /* Light blue for numbers */
+        }
+        .boolean {
+            color: #ffeb3b; /* Yellow for booleans */
+        }
+        .null {
+            color: #9e9e9e; /* Gray for null */
+        }
+    </style>
+</head>
+<body>
 
+    <h1>Media Downloader</h1>
+    <p>Enter the URL of the media you want to download:</p>
+    <input type="text" id="urlInput" placeholder="Enter media URL">
+    <button onclick="downloadMedia()">Get Response</button>
+
+    <div id="result"></div>
+
+    <script>
+        function syntaxHighlight(json) {
+            json = JSON.stringify(json, null, 4);
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|\d+)/g, function (match) {
+                let cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return `<span class="${cls}">${match}</span>`;
+            });
+        }
+
+        function downloadMedia() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) {
+                alert('Please enter a URL');
+                return;
+            }
+
+            fetch(`/download?url=${encodeURIComponent(url)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerHTML = syntaxHighlight(data);
+                })
+                .catch(error => {
+                    document.getElementById('result').innerText = 'Error: ' + error.message;
+                });
+        }
+    </script>
+
+</body>
+</html>
