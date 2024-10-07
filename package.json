@@ -12,6 +12,6 @@
   "dependencies": {
     "@types/node": "^18.0.6",
     "express": "^4.21.0",
-    "nayan-media-downloader": "^2.5.9"
+    "nayan-media-downloader": "^2.6.1"
   }
 }
